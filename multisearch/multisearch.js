@@ -1,5 +1,4 @@
 let params = location.search
-window.close()
 if (params == '') {
     window.open('./popup.html')
 } else {
