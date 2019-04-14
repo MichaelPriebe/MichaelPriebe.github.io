@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: michaelpriebe.github.io
+Token: 8e4164b14f6487aad6dccd3c3687afd25bb28cf5d1ff6cfb17afee27b469153d
