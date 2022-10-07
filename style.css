@@ -1,0 +1,21 @@
+.link {
+    position: absolute;
+    border-radius: 50%;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.link>img {
+    width: 50%;
+    height: 50%;
+}
+
+html,
+body {
+    background-color: #111;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
