@@ -11,14 +11,24 @@ class LinkSphere {
         const element = document.createElement('div')
         element.draggable = true
         let click = false
-        element.addEventListener('mousedown', function(e) {
+        element.addEventListener('mousedown', function (e) {
             click = true
         })
-        element.addEventListener('dragstart', function(e) {
+        element.addEventListener('touchstart', function (e) {
+            click = true
+        })
+        element.addEventListener('dragstart', function (e) {
             e.preventDefault()
             click = false
         })
-        element.addEventListener('click', function(e) {
+        element.addEventListener('touchmove', function (e) {
+            click = false
+        })
+        element.addEventListener('mouseup', function (e) {
+            if (click) window.location = url
+            click = false
+        })
+        element.addEventListener('touchend', function (e) {
             if (click) window.location = url
             click = false
         })
@@ -26,7 +36,7 @@ class LinkSphere {
         const img = document.createElement('img')
         img.src = './svg/' + name + '.svg'
         element.appendChild(img)
-        document.body.appendChild(element) 
+        document.body.appendChild(element)
         element.className = 'link'
         const style = element.style
         style.width = diameter + 'px'
@@ -78,7 +88,7 @@ const right = Matter.Bodies.rectangle(0, height / 2, size, height + size * 2, { 
 const ceil = Matter.Bodies.rectangle(0, -size / 2, width + size * 2, size, { isStatic: true })
 
 const mouseConstraint = Matter.MouseConstraint.create(
-    engine, { element: document.body}
+    engine, { element: document.body }
 )
 
 Matter.Composite.add(engine.world, [floor, left, right, ceil, mouseConstraint])
