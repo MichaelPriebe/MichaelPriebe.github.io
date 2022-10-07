@@ -22,13 +22,11 @@ class LinkSphere {
         element.addEventListener('touchmove', function (e) {
             click = false
         })
-        element.addEventListener('mouseup', function (e) {
+        element.addEventListener('click', function (e) {
             if (click) window.location = url
-            click = false
         })
         element.addEventListener('touchend', function (e) {
             if (click) window.location = url
-            click = false
         })
         const img = document.createElement('img')
         img.src = './svg/' + name + '.svg'
