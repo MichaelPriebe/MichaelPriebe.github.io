@@ -5,9 +5,7 @@ let height = window.innerHeight
 
 class LinkSphere {
 
-    constructor(radius, name, color, url) {
-        this.radius = radius
-        const diameter = radius * 2
+    constructor(size, name, color, url) {
         const element = document.createElement('div')
         element.draggable = true
         let click = false
@@ -32,18 +30,18 @@ class LinkSphere {
             if (click) window.location = url
             click = false
         })
-        // element.href = url
         const img = document.createElement('img')
         img.src = './svg/' + name + '.svg'
         element.appendChild(img)
         document.body.appendChild(element)
         element.className = 'link'
         const style = element.style
-        style.width = diameter + 'px'
-        style.height = diameter + 'px'
+        style.width = size + 'vmin'
+        style.height = size + 'vmin'
         style.backgroundColor = color
         this.element = element
-        const body = Matter.Bodies.circle(-1, -1, radius)
+        this.size = element.clientWidth
+        const body = Matter.Bodies.circle(-1, -1, this.size / 2)
         Matter.Composite.add(engine.world, body)
         this.body = body
     }
@@ -59,25 +57,29 @@ class LinkSphere {
     render() {
         this.retrive()
         const body = this.body
+        const element = this.element
+        const size = element.clientWidth
+        const scale = size / this.size
+        Matter.Body.scale(body, scale, scale)
+        this.size = size
         const { x, y } = body.position;
         const style = this.element.style
-        const radius = this.radius
-        style.left = x - radius + 'px'
-        style.top = y - radius + 'px'
+        style.left = x - size / 2 + 'px'
+        style.top = y - size / 2 + 'px'
         style.transform = 'rotate(' + body.angle + 'rad)';
     }
 }
 
 const links = [
-    new LinkSphere(Math.random() * 100 + 50, 'cashapp', '#00D632', 'https://cash.app/app/HHLTBJB'),
-    new LinkSphere(Math.random() * 100 + 50, 'coinbase', '#0052FF', 'https://coinbase.com/join/priebe_z'),
-    new LinkSphere(Math.random() * 100 + 50, 'fold', '#F2C42E', 'https://use.foldapp.com/r/YUWXWRXT'),
-    new LinkSphere(Math.random() * 100 + 50, 'instagram', '#FF0076', 'https://www.instagram.com/mikuhl_/'),
-    new LinkSphere(Math.random() * 100 + 50, 'lolli', '#A368FF', 'https://lolli.com/share//7TWQM9'),
-    new LinkSphere(Math.random() * 100 + 50, 'mintmobile', '#68AF85', 'http://fbuy.me/rYETc'),
-    new LinkSphere(Math.random() * 100 + 50, 'strike', '#000000', 'https://invite.strike.me/74R7R1'),
-    new LinkSphere(Math.random() * 100 + 50, 'twitter', '#1D9BF0', 'https://twitter.com/mikuhl_'),
-    new LinkSphere(Math.random() * 100 + 50, 'wealthfront', '#4840BB', 'https://www.wealthfront.com/c/affiliates/invited/AFFC-QUK9-GCKD-WWSD'),
+    new LinkSphere(Math.random() * 25 + 25, 'cashapp', '#00D632', 'https://cash.app/app/HHLTBJB'),
+    new LinkSphere(Math.random() * 25 + 25, 'coinbase', '#0052FF', 'https://coinbase.com/join/priebe_z'),
+    new LinkSphere(Math.random() * 25 + 25, 'fold', '#F2C42E', 'https://use.foldapp.com/r/YUWXWRXT'),
+    new LinkSphere(Math.random() * 25 + 25, 'instagram', '#FF0076', 'https://www.instagram.com/mikuhl_/'),
+    new LinkSphere(Math.random() * 25 + 25, 'lolli', '#A368FF', 'https://lolli.com/share//7TWQM9'),
+    new LinkSphere(Math.random() * 25 + 25, 'mintmobile', '#68AF85', 'http://fbuy.me/rYETc'),
+    new LinkSphere(Math.random() * 25 + 25, 'strike', '#000000', 'https://invite.strike.me/74R7R1'),
+    new LinkSphere(Math.random() * 25 + 25, 'twitter', '#1D9BF0', 'https://twitter.com/mikuhl_'),
+    new LinkSphere(Math.random() * 25 + 25, 'wealthfront', '#4840BB', 'https://www.wealthfront.com/c/affiliates/invited/AFFC-QUK9-GCKD-WWSD'),
 ]
 
 const size = 100
