@@ -2,97 +2,92 @@ const engine = Matter.Engine.create();
 
 let width = window.innerWidth
 let height = window.innerHeight
-
-class LinkSphere {
-
-    constructor(size, name, color, url) {
-        const element = document.createElement('div')
-        element.draggable = true
-        let click = false
-        element.addEventListener('mousedown', function (e) {
-            click = true
-        })
-        element.addEventListener('touchstart', function (e) {
-            click = true
-        })
-        element.addEventListener('dragstart', function (e) {
-            e.preventDefault()
-            click = false
-        })
-        element.addEventListener('touchmove', function (e) {
-            click = false
-        })
-        element.addEventListener('click', function (e) {
-            if (click) window.location = url
-        })
-        element.addEventListener('touchend', function (e) {
-            if (click) window.location = url
-        })
-        const img = document.createElement('img')
-        img.src = './svg/' + name + '.svg'
-        element.appendChild(img)
-        document.body.appendChild(element)
-        element.className = 'link'
-        const style = element.style
-        style.width = size + 'vmin'
-        style.height = size + 'vmin'
-        style.backgroundColor = color
-        this.element = element
-        this.size = element.clientWidth
-        const body = Matter.Bodies.circle(-1, -1, this.size / 2)
-        Matter.Composite.add(engine.world, body)
-        this.body = body
-    }
-
-    retrive() {
-        const body = this.body
-        const { x, y } = body.position;
-        if (x < 0 || y < 0 || x > width || y > height) {
-            Matter.Body.setPosition(body, { x: width / 2, y: height / 2 })
-        }
-    }
-
-    render() {
-        this.retrive()
-        const body = this.body
-        const element = this.element
-        const size = element.clientWidth
-        const scale = size / this.size
-        Matter.Body.scale(body, scale, scale)
-        this.size = size
-        const { x, y } = body.position;
-        const style = this.element.style
-        style.left = x - size / 2 + 'px'
-        style.top = y - size / 2 + 'px'
-        style.transform = 'rotate(' + body.angle + 'rad)';
-    }
-}
-
-const links = [
-    new LinkSphere(Math.random() * 25 + 25, 'amboss', '#FF0080', 'https://amboss.space/node/03e35f46a031560d437b3b2d81dce1039a19d12421d5a60362135448d0d96a077f'),
-    new LinkSphere(Math.random() * 25 + 25, 'cashapp', '#00D632', 'https://cash.app/app/HHLTBJB'),
-    new LinkSphere(Math.random() * 25 + 25, 'coinbase', '#0052FF', 'https://coinbase.com/join/priebe_z'),
-    new LinkSphere(Math.random() * 25 + 25, 'fold', '#F2C42E', 'https://use.foldapp.com/r/YUWXWRXT'),
-    new LinkSphere(Math.random() * 25 + 25, 'instagram', '#FF0076', 'https://www.instagram.com/mikuhl_/'),
-    new LinkSphere(Math.random() * 25 + 25, 'lolli', '#A368FF', 'https://lolli.com/share//7TWQM9'),
-    new LinkSphere(Math.random() * 25 + 25, 'mintmobile', '#68AF85', 'http://fbuy.me/rYETc'),
-    new LinkSphere(Math.random() * 25 + 25, 'strike', '#000000', 'https://invite.strike.me/74R7R1'),
-    new LinkSphere(Math.random() * 25 + 25, 'twitter', '#1D9BF0', 'https://twitter.com/mikuhl_'),
-    new LinkSphere(Math.random() * 25 + 25, 'wealthfront', '#4840BB', 'https://www.wealthfront.com/c/affiliates/invited/AFFC-QUK9-GCKD-WWSD'),
-]
-
-const size = 100
-
-const floor = Matter.Bodies.rectangle(0, 0, width + size * 2, size, { isStatic: true })
-const left = Matter.Bodies.rectangle(0, height / 2, size, height + size * 2, { isStatic: true })
-const right = Matter.Bodies.rectangle(0, height / 2, size, height + size * 2, { isStatic: true })
-const ceil = Matter.Bodies.rectangle(0, -size / 2, width + size * 2, size, { isStatic: true })
+const size = 1000
+const floor = Matter.Bodies.rectangle(0, 0, width, size, { isStatic: true })
+const left = Matter.Bodies.rectangle(0, 0, size, height, { isStatic: true })
+const right = Matter.Bodies.rectangle(0, 0, size, height, { isStatic: true })
+const ceil = Matter.Bodies.rectangle(0, 0, width, size, { isStatic: true })
 
 const mouseConstraint = Matter.MouseConstraint.create(
     engine, { element: document.body }
 )
 
 Matter.Composite.add(engine.world, [floor, left, right, ceil, mouseConstraint])
+
+class LinkBallElement extends HTMLDivElement {
+
+    constructor() {
+        super()
+        this.addEventListener("mousedown", this.mouseDown.bind(this))
+        this.addEventListener("touchstart", this.mouseDown.bind(this))
+        this.addEventListener("dragstart", this.mouseMove.bind(this))
+        this.addEventListener("touchmove", this.mouseMove.bind(this))
+        this.addEventListener("click", this.mouseUp.bind(this))
+        this.addEventListener("touchend", this.mouseUp.bind(this))
+    }
+
+    connectedCallback() {
+        if (this.initialized) return
+        this.initialized = true
+        this.draggable = true
+
+        const size = Math.random() * 20 + 20
+        this.style.width = size + "vmin"
+        this.style.height = size + "vmin"
+        this.style.backgroundColor = this.getAttribute("color")
+
+        this.size = this.clientWidth
+        this.body = Matter.Bodies.circle(width / 2, height / 2, this.size / 2)
+        Matter.Composite.add(engine.world, this.body)
+        Matter.Events.on(engine, "beforeUpdate", this.beforeUpdate.bind(this))
+        Matter.Events.on(engine, "afterUpdate", this.afterUpdate.bind(this))
+
+        const img = document.createElement("img")
+        img.src = './svg/' + this.getAttribute("name") + '.svg'
+        this.appendChild(img)
+    }
+
+    clampPosition() {
+        const { x, y } = this.body.position
+        Matter.Body.setPosition(this.body, {
+            x: Matter.Common.clamp(x, 0, width),
+            y: Matter.Common.clamp(y, 0, height),
+        })
+    }
+
+    beforeUpdate() {
+        this.clampPosition()
+        const size = this.clientWidth
+        const scale = size / this.size
+        if (scale != 1) Matter.Body.scale(this.body, scale, scale)
+        this.size = size
+    }
+
+    afterUpdate() {
+        this.clampPosition()
+        const { x, y } = this.body.position;
+        this.style.left = x - this.size / 2 + "px"
+        this.style.top = y - this.size / 2 + "px"
+        this.style.transform = "rotate(" + this.body.angle + "rad)";
+    }
+
+    mouseDown() {
+        this.click = true
+    }
+
+    mouseMove(event) {
+        event.preventDefault()
+        this.click = false
+    }
+
+    mouseUp() {
+        if (!this.click) return
+        window.location = this.getAttribute("url")
+    }
+
+}
+
+customElements.define('link-ball', LinkBallElement, { extends: "div" })
 
 function render() {
     const scaleX = window.innerWidth / width
@@ -107,7 +102,6 @@ function render() {
     Matter.Body.scale(right, 1, scaleY)
     Matter.Body.setPosition(ceil, { x: width / 2, y: -size / 2 })
     Matter.Body.scale(ceil, scaleX, 1)
-    for (const link of links) link.render()
     Matter.Engine.update(engine);
     requestAnimationFrame(render);
 }

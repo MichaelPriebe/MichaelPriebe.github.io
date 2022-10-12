@@ -1,4 +1,4 @@
-.link {
+div[is="link-ball"] {
     position: absolute;
     border-radius: 50%;
     user-select: none;
@@ -7,7 +7,7 @@
     align-items: center;
 }
 
-.link>img {
+div[is="link-ball"]>img {
     width: 50%;
     height: 50%;
 }
