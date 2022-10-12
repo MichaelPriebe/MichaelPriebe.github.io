@@ -69,6 +69,7 @@ class LinkSphere {
 }
 
 const links = [
+    new LinkSphere(Math.random() * 25 + 25, 'amboss', '#FF0080', 'https://amboss.space/node/03e35f46a031560d437b3b2d81dce1039a19d12421d5a60362135448d0d96a077f'),
     new LinkSphere(Math.random() * 25 + 25, 'cashapp', '#00D632', 'https://cash.app/app/HHLTBJB'),
     new LinkSphere(Math.random() * 25 + 25, 'coinbase', '#0052FF', 'https://coinbase.com/join/priebe_z'),
     new LinkSphere(Math.random() * 25 + 25, 'fold', '#F2C42E', 'https://use.foldapp.com/r/YUWXWRXT'),
