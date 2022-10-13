@@ -5,11 +5,16 @@ div[is="link-ball"] {
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 div[is="link-ball"]>img {
     width: 50%;
     height: 50%;
+}
+
+.grabbed {
+    cursor: grabbing !important;
 }
 
 html,

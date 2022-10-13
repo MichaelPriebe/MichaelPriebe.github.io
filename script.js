@@ -67,17 +67,20 @@ class LinkBallElement extends HTMLDivElement {
     }
 
     mouseDown() {
-        this.click = true
+        this.clicked = true
     }
 
     mouseMove(event) {
         event.preventDefault()
-        this.click = false
+        if (!this.clicked) return
+        this.clicked = false
+        this.classList.add("grabbed")
     }
 
     mouseUp() {
-        if (!this.click) return
-        window.location = this.getAttribute("url")
+        if (this.clicked) return window.location = this.getAttribute("url")
+        this.clicked = false
+        this.classList.remove("grabbed")
     }
 
 }
