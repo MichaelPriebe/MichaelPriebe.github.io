@@ -15,9 +15,9 @@ class LinkBallElement extends HTMLDivElement {
         super()
         this.addEventListener("mousedown", this.mouseDown.bind(this))
         this.addEventListener("touchstart", this.mouseDown.bind(this))
-        this.addEventListener("dragstart", this.mouseMove.bind(this))
+        this.addEventListener("mousemove", this.mouseMove.bind(this))
         this.addEventListener("touchmove", this.mouseMove.bind(this))
-        this.addEventListener("click", this.mouseUp.bind(this))
+        this.addEventListener("mouseup", this.mouseUp.bind(this))
         this.addEventListener("touchend", this.mouseUp.bind(this))
     }
 
