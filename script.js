@@ -1,16 +1,11 @@
-const engine = Matter.Engine.create();
+const engine = Matter.Engine.create()
+const thickness = Number.MAX_SAFE_INTEGER
+const floor = Matter.Bodies.rectangle(0, 0, thickness, thickness, { isStatic: true })
+const left = Matter.Bodies.rectangle(0, 0, thickness, thickness, { isStatic: true })
+const right = Matter.Bodies.rectangle(0, 0, thickness, thickness, { isStatic: true })
+const ceil = Matter.Bodies.rectangle(0, 0, thickness, thickness, { isStatic: true })
 
-let width = window.innerWidth
-let height = window.innerHeight
-const size = 1000
-const floor = Matter.Bodies.rectangle(0, 0, width, size, { isStatic: true })
-const left = Matter.Bodies.rectangle(0, 0, size, height, { isStatic: true })
-const right = Matter.Bodies.rectangle(0, 0, size, height, { isStatic: true })
-const ceil = Matter.Bodies.rectangle(0, 0, width, size, { isStatic: true })
-
-const mouseConstraint = Matter.MouseConstraint.create(
-    engine, { element: document.body }
-)
+const mouseConstraint = Matter.MouseConstraint.create(engine, { element: document.body })
 
 Matter.Composite.add(engine.world, [floor, left, right, ceil, mouseConstraint])
 
@@ -29,15 +24,14 @@ class LinkBallElement extends HTMLDivElement {
     connectedCallback() {
         if (this.initialized) return
         this.initialized = true
-        this.draggable = true
 
         const size = Math.random() * 20 + 20
-        this.style.width = size + "vmin"
-        this.style.height = size + "vmin"
-        this.style.backgroundColor = this.getAttribute("color")
+        const style = this.style
+        style.width = size + "vmin"
+        style.height = size + "vmin"
+        style.backgroundColor = this.getAttribute("color")
 
-        this.size = this.clientWidth
-        this.body = Matter.Bodies.circle(width / 2, height / 2, this.size / 2)
+        this.body = Matter.Bodies.circle(window.innerWidth / 2, window.innerHeight / 2, this.clientWidth / 2)
         Matter.Composite.add(engine.world, this.body)
         Matter.Events.on(engine, "beforeUpdate", this.beforeUpdate.bind(this))
         Matter.Events.on(engine, "afterUpdate", this.afterUpdate.bind(this))
@@ -50,25 +44,26 @@ class LinkBallElement extends HTMLDivElement {
     clampPosition() {
         const { x, y } = this.body.position
         Matter.Body.setPosition(this.body, {
-            x: Matter.Common.clamp(x, 0, width),
-            y: Matter.Common.clamp(y, 0, height),
+            x: Matter.Common.clamp(x, 0, window.innerWidth),
+            y: Matter.Common.clamp(y, 0, window.innerHeight),
         })
     }
 
     beforeUpdate() {
-        this.clampPosition()
-        const size = this.clientWidth
-        const scale = size / this.size
-        if (scale != 1) Matter.Body.scale(this.body, scale, scale)
-        this.size = size
+        const body = this.body
+        const scale = this.clientWidth / 2 / body.circleRadius
+        if (scale == 1) return
+        Matter.Body.scale(body, scale, scale)
     }
 
     afterUpdate() {
         this.clampPosition()
-        const { x, y } = this.body.position;
-        this.style.left = x - this.size / 2 + "px"
-        this.style.top = y - this.size / 2 + "px"
-        this.style.transform = "rotate(" + this.body.angle + "rad)";
+        const style = this.style
+        const body = this.body
+        const { x, y } = body.position;
+        style.left = x - body.circleRadius + "px"
+        style.top = y - body.circleRadius + "px"
+        style.transform = "rotate(" + body.angle + "rad)";
     }
 
     mouseDown() {
@@ -90,19 +85,14 @@ class LinkBallElement extends HTMLDivElement {
 customElements.define('link-ball', LinkBallElement, { extends: "div" })
 
 function render() {
-    const scaleX = window.innerWidth / width
-    const scaleY = window.innerHeight / height
-    width = window.innerWidth
-    height = window.innerHeight
-    Matter.Body.setPosition(floor, { x: width / 2, y: height + size / 2 })
-    Matter.Body.scale(floor, scaleX, 1)
-    Matter.Body.setPosition(left, { x: -size / 2, y: height / 2 })
-    Matter.Body.scale(left, 1, scaleY)
-    Matter.Body.setPosition(right, { x: width + size / 2, y: height / 2 })
-    Matter.Body.scale(right, 1, scaleY)
-    Matter.Body.setPosition(ceil, { x: width / 2, y: -size / 2 })
-    Matter.Body.scale(ceil, scaleX, 1)
+const width = window.innerWidth
+const height = window.innerHeight
+Matter.Body.setPosition(floor, { x: width / 2, y: height + thickness / 2 })
+Matter.Body.setPosition(left, { x: -thickness / 2, y: height / 2 })
+Matter.Body.setPosition(right, { x: width + thickness / 2, y: height / 2 })
+Matter.Body.setPosition(ceil, { x: width / 2, y: -thickness / 2 })
     Matter.Engine.update(engine);
     requestAnimationFrame(render);
 }
+
 render()
