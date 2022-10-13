@@ -85,12 +85,12 @@ class LinkBallElement extends HTMLDivElement {
 customElements.define('link-ball', LinkBallElement, { extends: "div" })
 
 function render() {
-const width = window.innerWidth
-const height = window.innerHeight
-Matter.Body.setPosition(floor, { x: width / 2, y: height + thickness / 2 })
-Matter.Body.setPosition(left, { x: -thickness / 2, y: height / 2 })
-Matter.Body.setPosition(right, { x: width + thickness / 2, y: height / 2 })
-Matter.Body.setPosition(ceil, { x: width / 2, y: -thickness / 2 })
+    const width = window.innerWidth
+    const height = window.innerHeight
+    Matter.Body.setPosition(floor, { x: width / 2, y: height + thickness / 2 })
+    Matter.Body.setPosition(left, { x: -thickness / 2, y: height / 2 })
+    Matter.Body.setPosition(right, { x: width + thickness / 2, y: height / 2 })
+    Matter.Body.setPosition(ceil, { x: width / 2, y: -thickness / 2 })
     Matter.Engine.update(engine);
     requestAnimationFrame(render);
 }
