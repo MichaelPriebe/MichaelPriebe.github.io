@@ -17,7 +17,7 @@ class LinkBallElement extends HTMLDivElement {
         this.addEventListener("touchstart", this.mouseDown.bind(this))
         this.addEventListener("mousemove", this.mouseMove.bind(this))
         this.addEventListener("touchmove", this.mouseMove.bind(this))
-        this.addEventListener("mouseup", this.mouseUp.bind(this))
+        this.addEventListener("click", this.mouseUp.bind(this))
         this.addEventListener("touchend", this.mouseUp.bind(this))
     }
 
@@ -37,7 +37,7 @@ class LinkBallElement extends HTMLDivElement {
         Matter.Events.on(engine, "afterUpdate", this.afterUpdate.bind(this))
 
         const img = document.createElement("img")
-        img.src = './svg/' + this.getAttribute("name") + '.svg'
+        img.src = "./svg/" + this.getAttribute("name") + ".svg"
         this.appendChild(img)
     }
 
@@ -60,13 +60,14 @@ class LinkBallElement extends HTMLDivElement {
         this.clampPosition()
         const style = this.style
         const body = this.body
-        const { x, y } = body.position;
+        const { x, y } = body.position
         style.left = x - body.circleRadius + "px"
         style.top = y - body.circleRadius + "px"
-        style.transform = "rotate(" + body.angle + "rad)";
+        style.transform = "rotate(" + body.angle + "rad)"
     }
 
-    mouseDown() {
+    mouseDown(event) {
+        event.preventDefault()
         this.clicked = true
     }
 
@@ -78,14 +79,14 @@ class LinkBallElement extends HTMLDivElement {
     }
 
     mouseUp() {
+        this.classList.remove("grabbed")
         if (this.clicked) return window.location = this.getAttribute("url")
         this.clicked = false
-        this.classList.remove("grabbed")
     }
 
 }
 
-customElements.define('link-ball', LinkBallElement, { extends: "div" })
+customElements.define("link-ball", LinkBallElement, { extends: "div" })
 
 function render() {
     const width = window.innerWidth
@@ -94,8 +95,8 @@ function render() {
     Matter.Body.setPosition(left, { x: -thickness / 2, y: height / 2 })
     Matter.Body.setPosition(right, { x: width + thickness / 2, y: height / 2 })
     Matter.Body.setPosition(ceil, { x: width / 2, y: -thickness / 2 })
-    Matter.Engine.update(engine);
-    requestAnimationFrame(render);
+    Matter.Engine.update(engine)
+    requestAnimationFrame(render)
 }
 
 render()
