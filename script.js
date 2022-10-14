@@ -88,6 +88,25 @@ class LinkBallElement extends HTMLDivElement {
 
 customElements.define("link-ball", LinkBallElement, { extends: "div" })
 
+window.addEventListener("deviceorientation", function (event) {
+    const orientation = window.orientation
+    if (orientation == undefined) return
+    const gravity = engine.gravity
+    if (orientation == 0) {
+        gravity.x = Matter.Common.clamp(event.gamma, -90, 90) / 90
+        gravity.y = Matter.Common.clamp(event.beta, -90, 90) / 90
+    } else if (orientation == 180) {
+        gravity.x = Matter.Common.clamp(event.gamma, -90, 90) / 90
+        gravity.y = Matter.Common.clamp(-event.beta, -90, 90) / 90
+    } else if (orientation == 90) {
+        gravity.x = Matter.Common.clamp(event.beta, -90, 90) / 90
+        gravity.y = Matter.Common.clamp(-event.gamma, -90, 90) / 90
+    } else if (orientation == -90) {
+        gravity.x = Matter.Common.clamp(-event.beta, -90, 90) / 90
+        gravity.y = Matter.Common.clamp(event.gamma, -90, 90) / 90
+    }
+})
+
 function render() {
     const width = window.innerWidth
     const height = window.innerHeight
