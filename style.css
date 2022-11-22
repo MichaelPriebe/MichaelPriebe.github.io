@@ -1,26 +1,78 @@
-div[is="link-ball"] {
-    position: absolute;
-    border-radius: 50%;
-    user-select: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
+html {
+  background-color: #121212;
+  font-family: sans-serif;
 }
 
-div[is="link-ball"]>img {
-    width: 50%;
-    height: 50%;
+body {
+  transition: margin 1s;
+}
+
+.no-js body {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: 16px;
+  row-gap: 8px;
+}
+
+.js body {
+  margin: 0;
+}
+
+html.js,
+.js body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.no-js .link {
+  align-items: center;
+  border-radius: 12px;
+  box-sizing: border-box;
+  color: white;
+  display: flex;
+  font-size: large;
+  height: 100px;
+  padding: 16px;
+  text-decoration: none;
+  width: 100%;
+}
+
+.js .link {
+  align-items: center;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  user-select: none;
+}
+
+.no-js .link-image {
+  aspect-ratio: 1;
+  height: 50%;
+  padding: 16px;
+}
+
+.js .link-image {
+  height: 50%;
+  width: 50%;
+}
+
+.js .link-name {
+  display: none;
+}
+
+@media (min-width: 600px) {
+  .no-js body {
+    margin-bottom: 200px;
+    margin-top: 200px;
+  }
+  .no-js .link {
+    width: 500px;
+  }
 }
 
 .grabbed {
-    cursor: grabbing !important;
-}
-
-html,
-body {
-    background-color: #111;
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
+  cursor: grabbing !important;
 }
