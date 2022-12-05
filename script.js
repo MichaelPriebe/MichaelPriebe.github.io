@@ -87,8 +87,9 @@ class PhysicsElement {
 }
 
 function render() {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
+  const html = document.documentElement;
+  const width = html.clientWidth;
+  const height = html.clientHeight;
   Matter.Body.setPosition(floor, { x: width / 2, y: height + thickness / 2 });
   Matter.Body.setPosition(left, { x: -thickness / 2, y: height / 2 });
   Matter.Body.setPosition(right, { x: width + thickness / 2, y: height / 2 });
