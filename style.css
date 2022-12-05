@@ -4,75 +4,114 @@ html {
 }
 
 body {
-  transition: margin 1s;
-}
-
-.no-js body {
-  align-items: center;
   display: flex;
-  flex-direction: column;
-  margin: 16px;
-  row-gap: 8px;
-}
-
-.js body {
+  justify-content: center;
   margin: 0;
 }
 
-html.js,
-.js body {
-  height: 100%;
-  overflow: hidden;
+#column {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  max-width: 500px;
+  padding: 8px;
+  padding-bottom: 200px;
+  padding-top: 200px;
+  row-gap: 8px;
+  transition: padding 1s;
 }
 
-.no-js .link {
-  align-items: center;
-  border-radius: 12px;
-  box-sizing: border-box;
-  color: white;
-  display: flex;
-  font-size: large;
-  height: 100px;
-  padding: 16px;
+#column a {
   text-decoration: none;
-  width: 100%;
 }
 
-.js .link {
-  align-items: center;
-  border-radius: 50%;
-  cursor: pointer;
+.row {
+  column-gap: 8px;
   display: flex;
+  flex-direction: row;
+  height: 100px;
+}
+
+.wide,
+.emoji {
+  border-radius: 12px;
+  display: flex;
+  height: 100%;
+}
+
+.wide {
+  align-items: center;
+  box-sizing: border-box;
+  flex: 1;
+  padding: 16px;
+}
+
+.single {
   justify-content: center;
-  position: absolute;
+}
+
+.icon {
+  aspect-ratio: 1;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 16px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  color: white;
+  font-size: large;
+}
+
+.subtitle {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: medium;
+}
+
+.emoji {
+  align-items: center;
+  aspect-ratio: 1;
+  font-size: xx-large;
+  justify-content: center;
+  margin-left: auto;
+}
+
+.gift {
+  animation: wiggle 2.5s infinite;
+}
+
+.physics {
   user-select: none;
 }
 
-.no-js .link-image {
-  aspect-ratio: 1;
-  height: 50%;
-  padding: 16px;
-}
-
-.js .link-image {
-  height: 50%;
-  width: 50%;
-}
-
-.js .link-name {
-  display: none;
-}
-
-@media (min-width: 600px) {
-  .no-js body {
-    margin-bottom: 200px;
-    margin-top: 200px;
-  }
-  .no-js .link {
-    width: 500px;
-  }
-}
-
 .grabbed {
-  cursor: grabbing !important;
+  cursor: grabbing;
+}
+
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(0deg);
+  }
+  80% {
+    transform: rotate(-10deg);
+  }
+  85% {
+    transform: rotate(10deg);
+  }
+  90% {
+    transform: rotate(-10deg);
+  }
+  95% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
