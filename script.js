@@ -1,4 +1,8 @@
-const engine = Matter.Engine.create();
+const engine = Matter.Engine.create({
+  gravity: {
+    scale: 0.002,
+  },
+});
 const thickness = Number.MAX_SAFE_INTEGER;
 const floor = Matter.Bodies.rectangle(0, 0, thickness, thickness, {
   isStatic: true,
@@ -86,17 +90,28 @@ class PhysicsElement {
   }
 }
 
+let lastUpdate = Date.now();
 function render() {
-  const html = document.documentElement;
-  const width = html.clientWidth;
-  const height = html.clientHeight;
+  const body = document.body;
+  const width = body.clientWidth;
+  const height = body.clientHeight;
   Matter.Body.setPosition(floor, { x: width / 2, y: height + thickness / 2 });
   Matter.Body.setPosition(left, { x: -thickness / 2, y: height / 2 });
   Matter.Body.setPosition(right, { x: width + thickness / 2, y: height / 2 });
   Matter.Body.setPosition(ceil, { x: width / 2, y: -thickness / 2 });
-  Matter.Engine.update(engine);
+
+  const now = Date.now();
+  const delta = now - lastUpdate;
+  Matter.Engine.update(engine, delta);
+  lastUpdate = now;
+
   requestAnimationFrame(render);
 }
+
+// Prevent huge jumps in time for engine update.
+window.addEventListener("visibilitychange", function (event) {
+  lastUpdate = Date.now();
+});
 
 window.addEventListener("deviceorientation", function (event) {
   const orientation = window.orientation;
@@ -118,13 +133,16 @@ window.addEventListener("deviceorientation", function (event) {
 });
 
 window.addEventListener("load", function () {
-  const html = document.documentElement;
+  const body = document.body;
+  body.classList.add("fixed");
+
   const mouseConstraint = Matter.MouseConstraint.create(engine, {
-    element: html,
+    element: body,
     angularStiffness: 0,
   });
-  html.style.overflow = "hidden";
   Matter.Composite.add(engine.world, mouseConstraint);
+
   document.querySelectorAll(".physics").forEach((e) => new PhysicsElement(e));
+  lastUpdate = Date.now();
   render();
 });
