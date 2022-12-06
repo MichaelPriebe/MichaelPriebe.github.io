@@ -49,14 +49,27 @@ class PhysicsElement {
 
   mouseDown(event) {
     event.preventDefault();
+    if (event instanceof TouchEvent) {
+      const touch = event.touches[0];
+      this.touchX = touch.clientX;
+      this.touchY = touch.clientY;
+    }
     this.clicked = true;
   }
 
   mouseMove(event) {
     event.preventDefault();
-    if (!this.clicked) return;
-    this.clicked = false;
-    this.element.classList.add("grabbed");
+    if (event instanceof TouchEvent) {
+      const touch = event.touches[0];
+      const dx = touch.clientX - this.touchX;
+      const dy = touch.clientY - this.touchY;
+      const delta = Math.sqrt(dx + dy);
+      if (delta < 5) return;
+      this.clicked = false;
+    } else if (this.clicked) {
+      this.clicked = false;
+      this.element.classList.add("grabbed");
+    }
   }
 
   mouseUp(event) {
