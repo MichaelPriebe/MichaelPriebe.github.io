@@ -1,8 +1,6 @@
-const engine = Matter.Engine.create({
-  gravity: {
-    scale: 0.002,
-  },
-});
+const engine = Matter.Engine.create();
+const runner = Matter.Runner.create();
+
 const thickness = Number.MAX_SAFE_INTEGER;
 const floor = Matter.Bodies.rectangle(0, 0, thickness, thickness, {
   isStatic: true,
@@ -84,9 +82,11 @@ class PhysicsElement {
     const element = this.element;
     const width = element.clientWidth;
     const height = element.clientHeight;
-    Matter.Body.scale(this.body, width / this.width, height / this.height);
-    this.width = width;
-    this.height = height;
+    if (this.width != width || this.height != height) {
+      Matter.Body.scale(this.body, width / this.width, height / this.height);
+      this.width = width;
+      this.height = height;
+    }
   }
 
   afterUpdate() {
@@ -102,29 +102,6 @@ class PhysicsElement {
     style.transform = "rotate(" + body.angle + "rad)";
   }
 }
-
-let lastUpdate = Date.now();
-function render() {
-  const body = document.body;
-  const width = body.clientWidth;
-  const height = body.clientHeight;
-  Matter.Body.setPosition(floor, { x: width / 2, y: height + thickness / 2 });
-  Matter.Body.setPosition(left, { x: -thickness / 2, y: height / 2 });
-  Matter.Body.setPosition(right, { x: width + thickness / 2, y: height / 2 });
-  Matter.Body.setPosition(ceil, { x: width / 2, y: -thickness / 2 });
-
-  const now = Date.now();
-  const delta = now - lastUpdate;
-  Matter.Engine.update(engine, delta);
-  lastUpdate = now;
-
-  requestAnimationFrame(render);
-}
-
-// Prevent huge jumps in time for engine update.
-window.addEventListener("visibilitychange", function (event) {
-  lastUpdate = Date.now();
-});
 
 window.addEventListener("deviceorientation", function (event) {
   const orientation = window.orientation;
@@ -155,7 +132,17 @@ window.addEventListener("load", function () {
   });
   Matter.Composite.add(engine.world, mouseConstraint);
 
+  Matter.Events.on(engine, "beforeUpdate", function () {
+    const body = document.body;
+    const width = body.clientWidth;
+    const height = body.clientHeight;
+    Matter.Body.setPosition(floor, { x: width / 2, y: height + thickness / 2 });
+    Matter.Body.setPosition(left, { x: -thickness / 2, y: height / 2 });
+    Matter.Body.setPosition(right, { x: width + thickness / 2, y: height / 2 });
+    Matter.Body.setPosition(ceil, { x: width / 2, y: -thickness / 2 });
+  });
+
   document.querySelectorAll(".physics").forEach((e) => new PhysicsElement(e));
-  lastUpdate = Date.now();
-  render();
+
+  Matter.Runner.run(runner, engine);
 });
